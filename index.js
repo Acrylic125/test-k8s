@@ -39,26 +39,23 @@ async function start() {
       hello: "World!",
     });
   });
+
   app.get("/", async (req, res) => {
     res.render("index", { notes: await retrieveNotes(db) });
   });
 
-  app.post(
-    "/note",
-    multer({ dest: path.join(__dirname, "public/uploads/") }).single("image"),
-    async (req, res) => {
-      if (!req.body.upload && req.body.description) {
-        await saveNote(db, { description: req.body.description });
-        res.redirect("/");
-      } else if (req.body.upload && req.file) {
-        const link = `/uploads/${encodeURIComponent(req.file.filename)}`;
-        res.render("index", {
-          content: `${req.body.description} ![](${link})`,
-          notes: await retrieveNotes(db),
-        });
-      }
+  app.post("/note", multer({ dest: path.join(__dirname, "public/uploads/") }).single("image"), async (req, res) => {
+    if (!req.body.upload && req.body.description) {
+      await saveNote(db, { description: req.body.description });
+      res.redirect("/");
+    } else if (req.body.upload && req.file) {
+      const link = `/uploads/${encodeURIComponent(req.file.filename)}`;
+      res.render("index", {
+        content: `${req.body.description} ![](${link})`,
+        notes: await retrieveNotes(db),
+      });
     }
-  );
+  });
 
   app.listen(port, () => {
     console.log(`App listening on http://localhost:${port}`);
