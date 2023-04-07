@@ -14,3 +14,4 @@ Make sure to have minikube installed.
 - To verify that it is running, run `kubectl get pods`. There should be 2 pods.
 - To restart, run `kubectl restart ben-knote`.
 - To delete, run `kubectl delete -f kube`.
+- To run commands, run `kubectl exec <pod name> -- <command>`
