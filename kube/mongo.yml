@@ -48,10 +48,11 @@ spec:
             # Here, we specify where should the database
             # be mounted to in the volume.
             - mountPath: /data/db
+              # Ref to the volumes storage.
               name: ben-mongo-storage
       # Here, we specify which volume to attach to
       # to store the DB.
       volumes:
-        - name: ben-mongo-volumes 
+        - name: ben-mongo-storage 
           persistentVolumeClaim:
             claimName: ben-mongo-pvc
