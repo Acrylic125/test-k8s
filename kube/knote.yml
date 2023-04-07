@@ -1,0 +1,43 @@
+# Pod Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: ben-knote
+spec:
+  selector:
+    # We are selecting the pods
+    app: ben-knote
+  ports:
+    # Expose HTTP (port 80) requests and forwards it to the container
+    # port, 3000
+    - port: 80
+      targetPort: 3000
+  # Default is ClusterIP (Only accepts local)
+  # LoadBalancer accepts and distrbutes traffic from the open.
+  type: LoadBalancer
+---
+# Pod deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ben-knote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ben-knote
+  template:
+    metadata:
+      labels:
+        app: ben-knote
+    spec:
+      containers:
+        - name: ben-knote
+          image: ben-knote:1.0
+          ports:
+            # Since the application runs on port 3000.
+            - containerPort: 3000
+          env:
+            - name: MONGO_URL
+              value: mongodb://mongo:27017/dev
+          imagePullPolicy: Always
