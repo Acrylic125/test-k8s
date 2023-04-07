@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: ben-knote
-          image: ben-knote:1.0
+          image: acrylic125/ben-knote:1.0
           ports:
             # Since the application runs on port 3000.
             - containerPort: 3000
