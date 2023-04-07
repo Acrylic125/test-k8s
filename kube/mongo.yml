@@ -1,0 +1,57 @@
+# First, we need to provision 156Mi of space
+# for our mongo database.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ben-mongo-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+--- 
+# Next, we need to attach a Service to expose
+# the mongo pods. We will expose port 27017:27017
+apiVersion: v1 
+kind: Service
+metadata:
+  name: ben-mongo
+spec:
+  selector: 
+    app: ben-mongo 
+  ports:
+    - port: 27017
+      targetPort: 27017
+--- 
+# Now we create a pod for mongo.
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: ben-mongo 
+spec:
+  selector:
+    matchLabels:
+      app: ben-mongo
+  template:
+    metadata:
+      labels:
+        app: ben-mongo
+    spec: 
+      # Create a container for mongo.
+      containers:
+        - name: ben-mongo
+          image: mongo:6.0.2-focal
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            # Here, we specify where should the database
+            # be mounted to in the volume.
+            - mountPath: /data/db
+              name: ben-mongo-storage
+      # Here, we specify which volume to attach to
+      # to store the DB.
+      volumes:
+        - name: ben-mongo-volumes 
+          persistentVolumeClaim:
+            claimName: ben-mongo-pvc
