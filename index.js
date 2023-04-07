@@ -34,6 +34,11 @@ async function start() {
   app.set("views", path.join(__dirname, "views"));
   app.use(express.static(path.join(__dirname, "public")));
 
+  app.get("/test", async (req, res) => {
+    res.status(200).json({
+      hello: "World!",
+    });
+  });
   app.get("/", async (req, res) => {
     res.render("index", { notes: await retrieveNotes(db) });
   });
