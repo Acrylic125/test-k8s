@@ -23,6 +23,7 @@ metadata:
   name: ben-knote
 spec:
   replicas: 1
+  # Select the ben-knote containers
   selector:
     matchLabels:
       app: ben-knote
