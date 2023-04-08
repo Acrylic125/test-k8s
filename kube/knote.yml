@@ -34,11 +34,17 @@ spec:
     spec:
       containers:
         - name: ben-knote
-          image: acrylic125/ben-knote:1.4
+          image: acrylic125/ben-knote:1.5
           ports:
             # Since the application runs on port 3000.
             - containerPort: 3000
           env:
             - name: MONGO_URL
               value: mongodb://ben-mongo:27017/dev
+            - name: MINIO_ACCESS_KEY
+              value: mykey
+            - name: MINIO_SECRET_KEY
+              value: mysecret
+            - name: MINIO_HOST
+              value: ben-minio
           imagePullPolicy: Always

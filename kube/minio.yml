@@ -1,0 +1,58 @@
+# Provision Minio storage
+apiVersion: v1 
+kind: PersistentVolumeClaim
+metadata:
+  name: ben-minio-pvc
+spec: 
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+--- 
+# Attach service to minio deployment 
+apiVersion: v1 
+kind: Service
+metadata:
+  name: ben-minio 
+spec:
+  selector:
+    app: ben-minio
+  ports:
+    - port: 9000
+      targetPort: 9000 
+--- 
+# Create deployment 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ben-minio 
+spec:
+  selector:
+    matchLabels:
+      app: ben-minio 
+  template:
+    metadata:
+      labels:
+        app: ben-minio
+    spec:
+      containers:
+        - name: ben-minio 
+          image: minio/minio:RELEASE.2022-10-29T06-21-33Z
+          args:
+            - server
+            - /storage
+          env:
+            - name: MINIO_ACCESS_KEY
+              value: mykey
+            - name: MINIO_SECRET_KEY
+              value: mysecret
+          ports:
+            - containerPort: 9000 
+          volumeMounts:
+            - mountPath: /storage 
+              name: storage 
+      volumes:
+        - name: storage 
+          persistentVolumeClaim:
+            claimName: ben-minio-pvc
