@@ -38,6 +38,13 @@ spec:
           ports:
             # Since the application runs on port 3000.
             - containerPort: 3000
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "0.1"
+            limits:
+              memory: "256Mi"
+              cpu: "0.2"
           env:
             - name: MONGO_URL
               value: mongodb://ben-mongo:27017/dev
