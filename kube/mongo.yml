@@ -24,35 +24,36 @@ spec:
     - port: 27017
       targetPort: 27017
 --- 
-# Now we create a pod for mongo.
-apiVersion: apps/v1 
-kind: Deployment
+# Now we create a stateful set for mongo.
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: ben-mongo 
 spec:
   selector:
     matchLabels:
       app: ben-mongo
+  serviceName: ben-mongo
+  replicas: 2
   template:
     metadata:
       labels:
         app: ben-mongo
-    spec: 
-      # Create a container for mongo.
+    spec:
+      terminationGracePeriodSeconds: 30
       containers:
         - name: ben-mongo
           image: mongo:6.0.2-focal
           ports:
             - containerPort: 27017
           volumeMounts:
-            # Here, we specify where should the database
-            # be mounted to in the volume.
-            - mountPath: /data/db
-              # Ref to the volumes storage.
-              name: ben-mongo-storage
-      # Here, we specify which volume to attach to
-      # to store the DB.
-      volumes:
-        - name: ben-mongo-storage 
-          persistentVolumeClaim:
-            claimName: ben-mongo-pvc
+          - name: storage
+            mountPath: /data/db
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        resources:
+          requests:
+            storage: 256Mi
