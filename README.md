@@ -23,3 +23,4 @@ THe ingress controller will be installed in the `ingress-nginx` namespace. Make 
 ## References
 
 - HPA requires metric server. However, if this is being tested locally, we need to disable TLS verification https://github.com/kubernetes-sigs/metrics-server/issues/917
+- ChaosMesh dashboard has permissions enabled by default if it is installed through helm. To disable it (For local testing), run `helm upgrade chaos-mesh chaos-mesh/chaos-mesh --namespace=chaos-mesh  --set dashboard.securityMode=false`. For reference, https://chaos-mesh.org/docs/next/manage-user-permissions/#enable-or-disable-permission-authentication
