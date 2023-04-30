@@ -19,3 +19,7 @@ THe ingress controller will be installed in the `ingress-nginx` namespace. Make 
 - To restart, run `kubectl restart ben-knote`.
 - To delete, run `kubectl delete -f kube`.
 - To run commands, run `kubectl exec <pod name> -- <command>`
+
+## References
+
+- HPA requires metric server. However, if this is being tested locally, we need to disable TLS verification https://github.com/kubernetes-sigs/metrics-server/issues/917
