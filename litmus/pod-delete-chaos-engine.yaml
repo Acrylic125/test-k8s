@@ -1,0 +1,157 @@
+# apiVersion: litmuschaos.io/v1alpha1
+# kind: ChaosEngine
+# metadata:
+#   name: engine-nginx
+#   namespace: demo
+# spec:
+#   appinfo:
+#     appns: 'demo'
+#     applabel: 'app=ben-knote'
+#     appkind: 'deployment'
+#   chaosServiceAccount: chaos-sa
+#   monitoring: true
+#   jobCleanUpPolicy: 'delete'
+#   experiments:
+#     - name: pod-delete
+#       spec:
+#         components:
+#           env:
+#             - name: TOTAL_CHAOS_DURATION
+#               value: '30'
+#             - name: CHAOS_INTERVAL
+#               value: '10'
+#             - name: FORCE
+#               value: 'true'
+#           probes:
+#             - name: "check-nginx-access"
+#               type: "httpProbe"
+#               httpProbe/inputs:
+#                 url: "http://<nginx-service-ip>"
+#                 insecureSkipVerify: false
+#                 responseTimeout: 100
+#                 method:
+#                   get:
+#                     criteria: "=="
+#                     responseCode: "200"
+#               mode: "Continuous"
+#               runProperties:
+#                 probeTimeout: 5
+#                 interval: 5
+#                 retry: 1
+#                 probePollingInterval: 2
+
+apiVersion: litmuschaos.io/v1alpha1
+kind: ChaosEngine
+metadata:
+  name: knote-chaos
+  namespace: demo
+spec:
+  appinfo:
+    appns: 'demo'
+    applabel: 'app=ben-knote'
+    appkind: 'deployment'
+  annotationCheck: 'false'
+  engineState: 'active'
+  auxiliaryAppInfo: ''
+  chaosServiceAccount: chaos-sa
+  monitoring: false
+  jobCleanUpPolicy: 'delete'
+  experiments:
+  - name: pod-delete
+    # spec:
+      # probe:
+      # - name: "check-frontend-access-url"
+      #   type: "httpProbe"
+      #   httpProbe/inputs:
+      #     url: "http://127.1.0.1:53990"
+      #     method:
+      #       # call http get method and verify the response code
+      #       get: 
+      #         # criteria which should be matched
+      #         criteria: == # ==, !=, oneof
+      #         # exepected response code for the http request, which should follow the specified criteria
+      #         responseCode: "200"
+      #   mode: "Continuous"
+      #   runProperties:
+      #     probeTimeout: 5 
+      #     interval: 2 
+      #     retry: 1
+      #     probePollingInterval: 2
+  # - name: pod-delete
+  #   spec:
+  #     components:
+  #       env:
+  #       - name: TOTALCHAOS_DURATION
+  #         value: '30'
+  #       - name: CHAOS_INTERVAL
+  #         value: '10'
+  #       - name: FORCE
+  #         value: 'false'
+  #       - name: PODS_AFFECTED_PERC
+  #         value: '30'
+  #     probe:
+  #       - name: 'check-frontend-access-url'
+  #         type: 'httpProbe'
+  #         httpProbe/inputs:
+  #           url: http://localhost:3000/
+  #           insecureSkipVerify: true
+  #           # responseTimeout: 1000 
+  #           method:
+  #             get:
+  #               criteria: == # supports == & != and oneof operations
+  #               responseCode: '200'
+  #         mode: 'Continuous'
+  #         runProperties:
+  #           probeTimeout: 1000
+  #           interval: 500
+  #           retry: 1
+  #           probePollingInterval: 2
+
+# apiVersion: litmuschaos.io/v1alpha1
+# kind: ChaosEngine
+# metadata:
+#   name: knote-chaos
+#   namespace: demo
+# spec:
+#   appinfo:
+#     appns: 'demo'
+#     applabel: 'app=ben-knote'
+#     appkind: 'deployment'
+#   annotationCheck: 'false'
+#   engineState: 'active'
+#   auxiliaryAppInfo: ''
+#   chaosServiceAccount: chaos-sa
+#   monitoring: false
+#   jobCleanUpPolicy: 'delete'
+#   experiments:
+#   - name: pod-delete
+#     spec:
+#       components:
+#         env:
+#         - name: TOTALCHAOS_DURATION
+#           value: '30'
+#         - name: CHAOS_INTERVAL
+#           value: '10'
+#         - name: FORCE
+#           value: 'false'
+#         - name: PODS_AFFECTED_PERC
+#           value: '30'
+#       probe:
+#         - name: 'check-frontend-access-url'
+#           type: 'httpProbe'
+#           httpProbe/inputs:
+#             # url: 'http://127.0.0.1:43383/'
+#             url: "http://localhost:3838/"
+#             insecureSkipVerify: false
+#             # responseTimeout: 1000 # in milli seconds
+#             method:
+#               get:
+#                 criteria: == # supports == & != and oneof operations
+#                 responseCode: '200'
+#           mode: 'Continuous'
+#           runProperties:
+#             probeTimeout: 1000
+#             interval: 500
+#             retry: 1
+#             probePollingInterval: 2
+
