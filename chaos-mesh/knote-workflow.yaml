@@ -1,0 +1,82 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: Workflow
+metadata:
+  name: knote-workflow
+spec:
+  entry: the-entry
+  templates:
+    # Entry
+    - name: the-entry
+      templateType: Parallel
+      deadline: 240s
+      children:
+        - workflow-phase-1
+        # - workflow-phase-2
+    # Phase 1
+    - name: workflow-phase-1
+      templateType: Parallel
+      deadline: 240s
+      children:
+        - workflow-stress-chaos
+        - workflow-network-chaos
+        - workflow-pod-chaos-schedule
+    - name: workflow-network-chaos
+      templateType: NetworkChaos
+      deadline: 20s
+      networkChaos:
+        direction: to
+        action: delay
+        mode: all
+        selector:
+          labelSelectors:
+            'app': 'ben-knote'
+        delay:
+          latency: '90ms'
+          correlation: '25'
+          jitter: '90ms'
+    - name: workflow-pod-chaos-schedule
+      templateType: Schedule
+      deadline: 40s
+      schedule:
+        schedule: '@every 2s'
+        type: 'PodChaos'
+        concurrencyPolicy: 'Forbid'
+        podChaos:
+          action: pod-kill
+          mode: one
+          selector:
+            labelSelectors:
+              'app': 'ben-knote'
+    - name: workflow-stress-chaos
+      templateType: StressChaos
+      deadline: 20s
+      stressChaos:
+        mode: one
+        selector:
+          labelSelectors:
+            'app': 'ben-knote'
+        stressors:
+          cpu:
+            workers: 4
+            load: 20
+            options: ['--cpu 1', '--timeout 600']
+    # Phase 2 - Check if HTTP request is successful
+    # - name: workflow-phase-2
+    #   templateType: Serial
+    #   deadline: 240s
+    #   children:
+    #     - workflow-check-http
+    # - name: workflow-check-http
+    #   templateType: HTTPChaos
+    #   deadline: 20s
+    #   httpChaos:
+    #     action: return
+    #     mode: one
+    #     selector:
+    #       labelSelectors:
+    #         'app': 'ben-knote'
+    #     return:
+    #       code: 200
+    #       percentage: 100
+    #       times: 1
+    #       body: 'Hello World'
