@@ -1,0 +1,21 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: StressChaos
+metadata:
+  name: memory-stress-example
+  namespace: default
+spec:
+  mode: fixed
+  value: '3'
+  duration: '60s'
+  selector:
+    namespaces:
+      - default
+    labelSelectors:
+      'app': 'ben-knote'
+  stressors:
+    cpu: 
+      workers: 2
+      load: 50
+    memory:
+      workers: 4
+      size: '256MB'
